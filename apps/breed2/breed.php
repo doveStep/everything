@@ -1,94 +1,109 @@
 <?PHP
-include 'backend.php';
+include 'breed_iface.php';
 
-class Spawn {
-    private $type = '';
-    private $coat_color_prime;
-    private $coat_color2;
-    private $alt_color_prime;
-    private $alt_color2;
-    private $facial_feature_prime;
-    private $facial_feature2;
-    private $eye_type_prime;
-    private $eye_type2;
-    private $mouth_type_prime;
-    private $mouth_type2;
-    private $be = NULL;
+class Squares extends Spawn {
+    private $p1 = array();
+    private $p2 = array();
+    private $dominance_threshold = 85;
+    private $traits = array(
+        'color' => array('dominant' => '', 'recessive' => '', 'type' => 'color'),
+    );
+	public $color;
 
-    function __construct($type = 1 /*cat*/, $parent1 = NULL, $parent2 = NULL) {
-print(__file__.', '.__class__.'::'.__function__.'( '.__line__.' )'."<br/>");
-        $parents = FALSE;
-        //TODO: Conver this to a row read from breed_spawn_types:attributes
-        $feature_list = array('coat_color', 'alt_color', 'facial_feature', 'eye_type', 'mouth_type');
-        
-        //Check to see if Parents exist
-        if ($parent1 != NULL || $parent2 != NULL) {
-            $parents = TRUE;
-        
-            //Verify that parents are also Spawn types.
-            if (! $parent1 instanceof Spawn || ! $parent2 instanceof Spawn) {
-                throw new Exception('Parent exists but is not an instance of Spawn');
-            }
-            
-            //Verify that the child is the same as parents, and parents are the same
-            if ($type != $parent1->getType() || $type != $parent2->getType()) {
-                throw new Exception('Parent types do not match each other or child.');
-            }
-        }
-        
-        $this->type = $type;
-        $this->be = new Backend();
-        
-        foreach ($feature_list as $temp => $feature) {
-            if ($parent1 == NULL || mt_rand(1, 10) == 1) {
-                $this->assignAttributeAtRandom($feature);
-            } else {
-                $this->assignAttributeFromParent($feature, $parent1, $parent2);
-            }
-        }
+    function __construct($parent1 = NULL, $parent2 = NULL) {
+		try {
+			//Check to see if Parents exist
+			if ($parent1 != NULL || $parent2 != NULL) {
+				$parents = TRUE;
+			
+				//Verify that parents are also Spawn types.
+				$class = __class__;
+				if (! $parent1 instanceof $class || ! $parent2 instanceof $class) {
+					throw new Exception('Parent exists but is not an instance of Spawn');
+				}
+			}
+			//Set parents
+			$this->setP1($parent1);
+			$this->setP2($parent2);
+			
+			foreach ($this->traits as $feature => &$val) {
+				$p1_val = $this->getAttr($feature, $parent1);
+				$p2_val = $this->getAttr($feature, $parent2);
+				$val = $this->assignAttributes($val, $p1_val, $p2_val);
+			}
+			$this->color = $this->traits['color']['dominant'];
+		} catch (Exception $e) {
+			echo "<br/>EXCEPTION:".json_encode($e->getMessage().'<br/><br/><br/>');
+		}
     }
     
-    function assignAttributeAtRandom($feature) {
-print(__file__.', '.__class__.'::'.__function__.'( '.__line__.' )'."<br/>");
-        $type = $this->type;
-        $possible = $this->be->getPossibilitiesForPosition($type, $feature);
-print(__file__.', '.__class__.'::'.__function__.'( '.__line__.' ): '.json_encode($possible)."<br/>");
-        $possible = explode(',', $possible);
-        if (is_array($possible)) {
-            $selected = array_rand($possible);
-            $off = array_rand($possible);
-        } else {
-            $selected = $off = $possible;
-        }
-print(__file__.', '.__class__.'::'.__function__.'( '.__line__.' ): '.$selected."<br/>");
-        $prime = $feature . '_prime';
-        $off = $feature . '2';
-        $this->{$prime} = $prime;
-        $this->{$off} = $off;
+    function getRandomColor() {
+		if (mt_rand(1, 25) == 1) {
+			switch (mt_rand(1, 5)) {
+				case 1:
+					return '#ff0000';
+				case 2:
+					return '#00ffoo';
+				case 3:				
+					return '#0000ff';
+				case 3:				
+					return '#000000';
+				case 3:				
+					return '#ffffff';
+			}
+		}
+        $color = '#';		
+        $color .= dechex(mt_rand(0, 16777215));
+        return $color;
     }
     
-    function assignAttributeFromParent($feature, $p1, $p2) {
-print(__file__.', '.__class__.'::'.__function__.'( '.__line__.' )'."<br/>");
-        $type = $this->type;
-        $prime = $feature . '_prime';
-        $off = $feature . '2';
-
-        //Have a 15% chance to choose the parent's off-gene instead of their primary.
-        //Randomly choose from the parents equally.
+    //Gets a parents' dominant/recessive values, and returns the appropriate one based on the dominance threshold.
+    //If no parent exists, return a random value.
+    function getAttr($attr, $obj) {
+        if ($obj == NULL) {
+            return $this->handleNullParents($attr);
+        }
+        if (!isset($obj->traits[$attr]['recessive']) || !isset($obj->traits[$attr]['dominant'])) {
+            throw new Exception('Obj is set but does not have appropriate traits set: '.json_encode($obj));
+        }
+        if (mt_rand(1, 100) >= $this->dominance_threshold) {
+            return $obj->$traits[$attr]['recessive'];
+        }
+        return $obj->$traits[$attr]['dominant'];
+    }
+    
+    //Input: $attribute_set = array('attribute', 'dominant', 'recessive')
+    //Output: return an array with those elements filled in.
+    function assignAttributes($attribute_set, $p1_val, $p2_val) {
         if (mt_rand(0, 1) == 1) {
-            $this->{$prime} = (mt_rand(0, 7) == 1) ? $p1[$prime] : $p1[$off];
-            $this->{$off} = (mt_rand(0, 7) == 1) ? $p2[$prime] : $p2[$off];
+            $attribute_set['dominant'] = $p2_val;
+            $attribute_set['recessive'] = $p1_val;
         } else {
-            $this->{$prime} = (mt_rand(0, 7) == 1) ? $p2[$prime] : $p2[$off];
-            $this->{$off} = (mt_rand(0, 7) == 1) ? $p1[$prime] : $p1[$off];
+            $attribute_set['dominant'] = $p1_val;
+            $attribute_set['recessive'] = $p2_val;        
+        }
+        return $attribute_set;
+    }
+    
+    function handleNullParents( $attr ) {
+        //Handle null parents
+        switch ($attr) {
+            default:           
+                throw new Exception('No valid type set in attribute_set: '.json_encode($attr));
+            case 'color':
+                return $this->getRandomColor();
         }
     }
     
     /**************************GETTERS AND SETTERS*********************************************/
     
-    function getType() {
-        return $this->type;
+    function setP1($parent) {
+        $this->p1 = $parent;
     }
+    function setP2($parent) {
+        $this->p2 = $parent;
+    }
+    
     
     /**************************ATTRIBUTE INSTANTIATORS*****************************************/
 }
