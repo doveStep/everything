@@ -40,7 +40,7 @@ function init() {
 				//Take the color string and set both selected values to those
 				
 				
-				color = getRandomColor();
+				color = getRandomColor(15, 'grid');
 				saved_ele.innerHTML = color;
 				toggleSelectedBorder(saved_ele, 'off');
 				saved_ele.style.backgroundColor = color;
@@ -65,34 +65,46 @@ function init() {
 	}
 }
 
-function getRandomColor(solid_chance) {
+function getRandomColor(solid_chance, location) {
 	if (isNaN(solid_chance)) {
 		solid_chance = 15;
 	}
 	var color = '#';
-    rand = random(solid_chance);
+	if (location == 'grid') {
+		rand = random(solid_chance);
+	} else {
+		rand = 0;
+	}
+console.log('getRandomColor case: ' + rand);
     switch (rand) {
-        case '1':
-            return '#000000';
-        case '2':
-            return '#ffffff';
-        case '3':
-            return '#0000ff';
-        case '4':
-            return '#00ff00';
-        case '5':
-            return '#ff0000';
+        case 1:
+            color = '#000000';
+			break;
+        case 2:
+            color = '#ffffff';
+			break;
+        case 3:
+            color = '#0000ff';
+			break;
+        case 4:
+            color = '#00ff00';
+			break;
+        case 5:
+            color = '#ff0000';
+			break;
         default:
             while (color.length != 7) {
                 color = '#' + random(color_rand).toString(16);
             }
-            return color;
+			break;
     }
+console.log('color = ' + color);
+	return color;
 }
 
 function generateIndex() {
 	var index = document.getElementById('index_square');
-	index_bg = getRandomColor(40);
+	index_bg = getRandomColor(40, 'index');
 	index.style.backgroundColor = index_bg;
 	index.setAttribute("class", "bar");
 }
@@ -115,7 +127,7 @@ function generateNewSquare(w, h) {
 	terminator_node = document.getElementById('terminator_node');
 	document.body.insertBefore(new_div, terminator_node);
 	new_div.setAttribute("class", "square");
-	var color = getRandomColor();
+	var color = getRandomColor(15, 'grid');
 	new_div.innerHTML = color;
 	new_div.style.backgroundColor = color;
 	return new_div;
@@ -125,7 +137,9 @@ function random(max) {
 	if (isNaN(max)) {
 		max = 1;
 	}
-    return Math.floor(max * Math.random());
+	var random = Math.floor(max * Math.random());
+console.log('random = ' + random);
+    return random;
 }
 
 //color _1_ was dragged onto color _2_, combined to form _3_, _4_ replaced the consumed one.
@@ -171,6 +185,9 @@ function checkvictory_adjacency(hex) {
 		var index_diff = hexDec(index_bg.substring(1 + (2*i), 3 + (2*i)));
 		
 		var off = (hex_diff - index_diff).toFixed(0);
+		if (off == -255) {
+			off = 0;
+		}
 		victory_adjacency += '<span style="color:'+rgbs[i]+'">'+rgbs[i] + ' is off by ' + off + '.</span>&nbsp;';
 		sum_off += Math.abs(parseInt(off));
 	}
