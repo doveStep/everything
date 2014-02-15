@@ -19,7 +19,9 @@ javascript:
 		  set style on costperbedroom to background-color:green; if <900, else :red.
 	*/
 
-	$( ".l2" ).each(function(index, element){
+	
+	
+	$( ".row" ).each(function(index, element){	
 		text = element.innerHTML;
 		var begindollar = text.indexOf("$");
 		var enddollar = text.indexOf("<", begindollar);
@@ -27,9 +29,12 @@ javascript:
 		var endbr = text.indexOf(" - ", beginbr);
 		
 		var price = text.substring(begindollar + 1, enddollar);
-		var brs = text.substring(beginbr + 2, endbr - 2);
-		
+		var brs = text.substring(beginbr + 2, endbr - 2);		
 		var avg_cost_per_room = Math.floor(price / brs);
-		offset = (avg_cost_per_room < 800) ? '*!*       ' : '';
-		console.log(offset + 'cost per room: $' + avg_cost_per_room);
+		color = (avg_cost_per_room <= 800) ? 'red' : 'green';
+		console.log(color + 'cost per room: $' + avg_cost_per_room);
+		console.log(this);
+		
+		$( this ).after( '<span style="color:' + color + ';">$' + avg_cost_per_room + '</span>');		
+		
 	});
