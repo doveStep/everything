@@ -110,12 +110,12 @@ function generateIndex() {
 	index_bg = getRandomColor(40, 'index');
 console.log('index_bg = '+index_bg);
 	index.style.backgroundColor = index_bg;
-	index.setAttribute("class", "bar");
+	$( "#index_square" ).wrapInner( "<img class='cat_png' src='cat.png' />");
 }
 
 function generateGrid() {
 console.log('init generateGrid');
-	for (h = 0; h < 5; h++) {
+	for (h = 0; h < 6; h++) {
 		for (w = 0; w < 4; w++) {
 			// if (w == 1) {
 				// var new_br = document.createElement("br");
@@ -124,7 +124,8 @@ console.log('init generateGrid');
 			var last_square = generateNewSquare(w, h);
 		}
 	}
-	$( ".square" ).wrapInner( "<img class='cat_png' src='cat.png' />");
+	$( ".square" ).wrapInner( "<img class='cat_png' src='cat.png' /> <img class='cat_stripes' src='cat_stripes.png' />");
+	// $( ".square" ).wrapInner( "<img class='cat_stripes' src='cat_stripes.png' />");
 }
 
 function generateNewSquare(w, h) {
@@ -205,9 +206,11 @@ console.log('off was -255, is now 0');
 	}
 	sum_off -= win_similarity;
 	
-	victory_adjacency += ' (' + sum_off + ' away from victory)';
+	victory_adjacency += '<br/>';
 	if (sum_off <= 0) {
 		victory_adjacency += 'AND YOU WIN! ( ' + turns + ' turns)';
+	} else {
+		victory_adjacency += ' (' + sum_off + ' away from victory)';
 	}
 	
 	console.log('victory_adjacency = ' + victory_adjacency);

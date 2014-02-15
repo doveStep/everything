@@ -1,0 +1,30 @@
+javascript:
+	//This html file doesn't actually go anywhere; copy/paste the script into a bookmark URL, go to 'http://sfbay.craigslist.org/search/apa/sfc?zoomToPosting=&catAbb=apa&query=&minAsk=&maxAsk=&bedrooms=3&housing_type=&hasPic=1&excats=' and click it.
+
+	var s=document.createElement('script');
+	s.setAttribute('src','http://code.jquery.com/jquery.js');
+	document.getElementsByTagName('body')[0].appendChild(s);
+
+	//foreach element 'span.l2',
+	//	Take span.price and set it to var price
+	//	Take span.l2.innerHTML and set it to var brs
+	//  strip '/ -' from brs
+	//  strip '$' from price
+	//  divide price/brs and set the result to var costperbedroom
+	//  append costperbedroom in a new span after 'span.l2'
+	//  set style on costperbedroom to background-color:green; if <900, else :red.
+
+	function htmlreplace(a,b,element) {
+		if (!element) {
+			element=document.body;
+		}
+		var nodes=element.childNodes;
+		for(var n=0; n < nodes.length; n++) {
+			if (nodes[n].nodeType==Node.TEXT_NODE) {
+				nodes[n].textContent = nodes[n].textContent.replace(new RegExp(a,'gi'),b);
+			} else {
+				htmlreplace(a,b,nodes[n]);
+			}
+		}
+	}
+	htmlreplace(' cow hollow',' hilarity');
