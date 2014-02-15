@@ -8,6 +8,9 @@ javascript:
 	s.setAttribute('src','http://code.jquery.com/jquery.js');
 	document.getElementsByTagName('body')[0].appendChild(s);
 
+	var too_much = 1000;
+	var perfect = 800;	
+	
 	/*
 		foreach element 'span.l2',
 			Take span.price and set it to var price
@@ -31,10 +34,12 @@ javascript:
 		var price = text.substring(begindollar + 1, enddollar);
 		var brs = text.substring(beginbr + 2, endbr - 2);		
 		var avg_cost_per_room = Math.floor(price / brs);
-		color = (avg_cost_per_room <= 800) ? 'red' : 'green';
-		console.log(color + 'cost per room: $' + avg_cost_per_room);
-		console.log(this);
+		color = (avg_cost_per_room <= perfect) ? 'red' : 'green';
 		
-		$( this ).after( '<span style="color:' + color + ';">$' + avg_cost_per_room + '</span>');		
+		if (avg_cost_per_room <= too_much) {
+			$( this ).after( '<span style="color:' + color + ';">$' + avg_cost_per_room + '</span>');		
+		} else {
+			$(this).css({'display':'none'});
+		}
 		
 	});
