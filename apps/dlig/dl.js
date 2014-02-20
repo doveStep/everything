@@ -22,29 +22,12 @@ function getUrl() {
 	return url;
 }
 
-function downloadButton(url) {
-	//Create a download button
-	var dl = document.createElement('a');
-	dl.setAttribute('id', 'downloadInstagramPic');
-	dl.setAttribute('download', '');
-	dl.setAttribute('href', url);
-	dl.innerHTML = 'download this picture!';
-
-	//Hide all of the default page stuff so they can download.
-	$( ".root" ).css({'display':'none'});
-	$( ".igDialogLayer" ).css({'display':'none'});
-			
-	document.getElementsByTagName('body')[0].appendChild( dl );
-}
-
-function backToContext() {
-	$( ".root" ).css({'display':'inline'});
-	$( ".igDialogLayer" ).css({'display':'inline'});
+function download(url) {
+	$("body").append("<a download id='downloadInstagramPic' href='" + url + "'></a>");
+	var button = $("#downloadInstagramPic")[0];
+	button.click();
+	$( "#downloadInstagramPic" ).remove();
 }
 
 var url = getUrl();
-downloadButton(url);
-
-$( "#downloadInstagramPic" ).click(function() {
-	backToContext();
-});
+download(url);
