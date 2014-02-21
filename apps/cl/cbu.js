@@ -13,8 +13,8 @@ var s=document.createElement('script');
 s.setAttribute('src','http://code.jquery.com/jquery.js');
 document.getElementsByTagName('body')[0].appendChild(s);
 
-var too_much = 1000;
-var perfect = 800;	
+var too_much = 800;
+var perfect = 700;	
 
 $( ".row" ).each(function(index, element){	
 	text = element.innerHTML;
