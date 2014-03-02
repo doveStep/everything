@@ -4,6 +4,7 @@ USE seandb;
 /* used by the server to execute push commands: write the user it's being sent to */
 CREATE TABLE `eve_wallet_history` (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `key_id` INT(40),	/* UID, effectively. cannot be changed(?), whereas the vcode can be. */
     `txn_date` varchar(20) NOT NULL,
     `ref_id` bigint(20) NOT NULL,
     `ref_type` varchar(255) NOT NULL,
@@ -19,5 +20,5 @@ CREATE TABLE `eve_wallet_history` (
     `hash` varchar(40),
     PRIMARY KEY `id` (`id`),
     UNIQUE KEY `hash` (`hash`),
-    KEY `ref_id` (`ref_id`)
+    KEY `key_id` (`key_id`)
 ) ENGINE=InnoDB;

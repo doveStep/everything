@@ -1,0 +1,14 @@
+table,
+td,
+th {
+	border:1px solid green;
+	text-align:center;
+	padding:2px 5px;
+}
+th {
+	background-color:green;
+	color:white;
+}
+.redtext {
+	color:red;
+}
