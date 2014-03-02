@@ -50,9 +50,11 @@ function getCommuteTime(form) {
 }
 
 function calculateDistances(work_addy, house_addy) {
-console.log('calculateDistances1');
+var load = google.maps.Load;
+console.log(load);
+console.log(google);
   var service = new google.maps.DistanceMatrixService();
-console.log('calculateDistances3');
+console.log('calculateDistances4');
   service.getDistanceMatrix(
     {
       origins: [house_addy],
@@ -62,7 +64,7 @@ console.log('calculateDistances3');
       avoidHighways: false,
       avoidTolls: false
     }, googDistMatrixCallback);
-console.log('calculateDistances3');
+console.log('calculateDistances5');
 }
 
 function googDistMatrixCallback(response, status) {
@@ -81,5 +83,4 @@ function googDistMatrixCallback(response, status) {
   //var rackspace = "https://www.google.com/maps/dir/'"+ coords +"'/Rackspace,+620+Folsom+St+%23100,+San+Francisco,+CA+94107/";
   //$( '<a target="_blank" href="' + rackspace + '">(Rackspace)</a>' ).insertAfter( 'div.mapaddress' );  
 }
-
-$( '<form id="commuteToWorkEstim" action="" method="get"><input type="text" name="commute_address" value=""/><input type="button" name="button" value="click" onclick="getCommuteTime(this.form)"></form>').insertAfter( 'div.mapaddress' );
+	$( '<form id="commuteToWorkEstim" action="" method="get"><input type="text" name="commute_address" value=""/><input type="button" name="button" value="click" onclick="getCommuteTime(this.form)"></form>').insertAfter( 'div.mapaddress' );
