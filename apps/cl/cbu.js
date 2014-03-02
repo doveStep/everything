@@ -16,6 +16,9 @@ document.getElementsByTagName('body')[0].appendChild(s);
 var s=document.createElement('script');
 s.setAttribute('src','https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false');
 document.getElementsByTagName('body')[0].appendChild(s);
+var s=document.createElement('script');
+s.setAttribute('src','http://sean.hexault.com/clrooms/distance.js');
+document.getElementsByTagName('body')[0].appendChild(s);
 
 var too_much = 800;
 var perfect = 700;	
